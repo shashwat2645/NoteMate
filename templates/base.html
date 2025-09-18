@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock %} | NoteMate</title>
+    <link rel="icon" type="image/x-icon" href="/static/note_logo.png " />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <style>
+      .active {
+        font-weight: bolder;
+        color: #eff0f1 !important;
+        background-color: #0c0b09; /* yellow highlight */
+        border-radius: 0.7rem;
+        padding: 0.5rem 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid d-flex align-items-center">
+        <!-- Left side: Brand -->
+        <a
+          class="navbar-brand fw-semibold"
+          style="
+            font-family: 'Nerko One', cursive;
+            font-weight: 100;
+            font-style: normal;
+            font-size: 1.7rem;
+          "
+          href="/"
+        >
+          <img
+            src="/static/note_logo.png"
+            alt="NoteMate Logo"
+            width="50"
+            height="50"
+            class="d-inline-block align-text-top"
+          />
+        </a>
+
+        <!-- Middle: Centered Nav Links -->
+        <div
+          class="collapse navbar-collapse justify-content-center"
+          id="navbarSupportedContent"
+        >
+          <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.path == '/' %}active{% endif %} fw-semibold"
+                aria-current="page"
+                href="/"
+                >Home</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.path == '/create_note/' %}active{% endif %} fw-semibold"
+                href="/create_note/"
+                >Create Note</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <!-- Right side: Avatar -->
+        <a class="navbar-brand ms-auto" href="#">
+          <button
+          style="border-radius: 0.7rem;
+          font-size: 1.0rem;
+        padding: 0.5rem 1rem;
+        background-color: #0c0b09;
+        color: #eff0f1;
+        border: none;">LogOut</button>
+        </a>
+      </div>
+    </nav>
+
+    {% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+
+    <div class="container my-4">
+        {% block content %}{% endblock %}
+    </div>
+    
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
