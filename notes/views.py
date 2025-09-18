@@ -8,12 +8,17 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
-@login_required
+# def index(request):
+#     if request.user.is_anonymous:
+#         return redirect('login')
+#     notes = Note.objects.all().order_by('-created_at')
+#     return render(request, 'index.html',{'notes':notes})
+
+@login_required(login_url='/login/')
 def index(request):
-    if request.user.is_anonymous:
-        return redirect('login')
-    notes = Note.objects.all().order_by('-created_at')
-    return render(request, 'index.html',{'notes':notes})
+    from django.http import HttpResponse
+    return HttpResponse("Hello from NoteMate!")
+
 
 @login_required
 def create_note(request):
