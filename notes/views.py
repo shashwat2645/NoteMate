@@ -8,16 +8,16 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
-# def index(request):
-#     if request.user.is_anonymous:
-#         return redirect('login')
-#     notes = Note.objects.all().order_by('-created_at')
-#     return render(request, 'index.html',{'notes':notes})
-
 @login_required(login_url='/login/')
 def index(request):
-    from django.http import HttpResponse
-    return HttpResponse("Hello from NoteMate!")
+    if request.user.is_anonymous:
+        return redirect('login')
+    notes = Note.objects.all().order_by('-created_at')
+    return render(request, 'index.html',{'notes':notes})
+
+# def index(request):
+#     from django.http import HttpResponse
+#     return HttpResponse("Hello from NoteMate!")
 
 
 @login_required
@@ -102,6 +102,8 @@ def register(request):
 
 # ----------------- LOGIN -----------------
 def login_user(request):
+    if request.user.is_authenticated:  # prevent logged-in users from seeing login page
+        return redirect('index')
     if request.method == "POST":
         email = request.POST.get('email').strip()
         password = request.POST.get('password')
@@ -111,14 +113,15 @@ def login_user(request):
             messages.error(request, "All fields are required!")
             return redirect('login')
 
+        # Try to get the user by email
         try:
             user_obj = User.objects.get(email=email)
-            username = user_obj.username
         except User.DoesNotExist:
             messages.error(request, "Invalid email or password")
             return redirect('login')
 
-        user = authenticate(request, username=username, password=password)
+        # Use the actual username stored in DB
+        user = authenticate(request, username=user_obj.username, password=password)
 
         if user is not None:
             login(request, user)
