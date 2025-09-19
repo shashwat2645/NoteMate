@@ -25,15 +25,13 @@ def create_note(request):
     if request.method=="POST":
         name = request.POST.get('title')
         desc = request.POST.get('content')
-
+    
         if name!="" and desc!="":
-            note = Note(title=name, content=desc)
+            note = Note(title=name, content=desc, user=request.user)  
             note.save()
             messages.success(request, "Note created successfully!")
             return redirect('index')
-        # print("===================")
-        # print("Title:", name)
-        # print("Content:", desc)
+
     return render(request, 'create_note.html')
 
 @login_required

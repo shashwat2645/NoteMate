@@ -1,5 +1,9 @@
-{% extends 'base.html' %} {% block title %}Home{% endblock %} 
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
 {% block content %}
+
+
+
 
 <div class="container text-center mt-5">
   {% if notes %}
@@ -30,7 +34,6 @@
             </button>
           </form>
 
-          <!-- Modal -->
           <div class="modal fade" id="noteModal{{ note.id }}" tabindex="-1">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -47,13 +50,6 @@
                   <p>{{ note.content }}</p>
                 </div>
                 <div class="modal-footer">
-                  <!-- <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                  >
-                    Close
-                  </button> -->
                 </div>
               </div>
             </div>
@@ -75,5 +71,6 @@
 
   {% endif %}
 </div>
+
 
 {% endblock %}
