@@ -24,8 +24,8 @@ body {
 }
 
 .login-section .alert {
-  max-width: 400px;       /* same width feel as inputs */
-  margin: 0 auto 20px;    /* centers horizontally + spacing */
+  max-width: 400px;     
+  margin: 0 auto 20px;  
   text-align: left;
   font-size: 14px;
 }
@@ -73,7 +73,7 @@ form input {
 button {
   width: 100%;
   padding: 12px;
-  background-color: #e63946;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
   color: white;
   border: none;
   border-radius: 20px;
@@ -81,11 +81,13 @@ button {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-button:hover{
-  background-color: #e72131;
+
+button:hover {
+  background: linear-gradient(135deg, #5a0fbf, #1e63e9); /* slightly darker hover */
   transform: translateY(-2px); /* subtle lift effect */
-  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
+
 
 .signup {
   margin-top: 20px;
