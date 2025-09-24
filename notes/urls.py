@@ -6,7 +6,6 @@ from notes import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('create_note/', views.create_note, name='create_note'),
-    path('save_note/', views.save_note, name='save_note'),
     path('delete/<int:note_id>/', views.delete_note, name='delete_note'),
     path('edit/<int:note_id>/', views.edit_note, name='edit_note'),
     path('register/', views.register, name='register'),

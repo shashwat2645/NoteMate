@@ -15,16 +15,61 @@
       .active {
         font-weight: bolder;
         color: #eff0f1 !important;
-        background-color: #0c0b09; /* yellow highlight */
+        background-color: #0c0b09; 
         border-radius: 0.7rem;
         padding: 0.5rem 1rem;
+      }
+      .navbar {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        padding: 0.2rem 1rem;
+      }
+
+      .navbar-brand {
+        color: #fff !important;
+      }
+
+      .nav-link {
+        color: #f1f1f1 !important; 
+        margin: 0 0.5rem;
+        transition: all 0.2s ease;
+      }
+
+      .nav-link:hover {
+        color: #fff !important;
+        transform: translateY(-1px);
+      }
+
+      .nav-link.active {
+        font-weight: 700;
+        color: #fff !important;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 0.5rem;
+        padding: 0.4rem 0.9rem;
+      }
+
+      .navbar .btn-logout {
+        border-radius: 0.7rem;
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        border: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+      }
+
+      .navbar .btn-logout:hover {
+        background: #fff;
+        color: #6a11cb;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
       }
     </style>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid d-flex align-items-center">
-        <!-- Left side: Brand -->
+        
         <a
           class="navbar-brand fw-semibold"
           style="
@@ -44,7 +89,6 @@
           />
         </a>
 
-        <!-- Middle: Centered Nav Links -->
         <div
           class="collapse navbar-collapse justify-content-center"
           id="navbarSupportedContent"
@@ -68,37 +112,29 @@
           </ul>
         </div>
 
-        <!-- Right side: Avatar -->
         <a class="navbar-brand ms-auto" href="{% url 'logout' %}">
-          <button
-          style="border-radius: 0.7rem;
-          font-size: 1.0rem;
-        padding: 0.5rem 1rem;
-        background-color: #0c0b09;
-        color: #eff0f1;
-        border: none;">LogOut</button>
+          <button class="btn-logout">LogOut</button>
         </a>
       </div>
     </nav>
 
-    
-
     {% if messages %}
-  <div class="container mt-3">
-    {% for message in messages %}
+    <div class="container mt-3">
+      {% for message in messages %}
       <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
       </div>
-    {% endfor %}
-  </div>
-{% endif %}
-
-
-    <div class="container my-4">
-        {% block content %}{% endblock %}
+      {% endfor %}
     </div>
-    
+    {% endif %}
+
+    <div class="container my-4">{% block content %}{% endblock %}</div>
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"

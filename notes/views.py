@@ -12,13 +12,8 @@ from django.contrib.auth import authenticate, login, logout
 def index(request):
     if request.user.is_anonymous:
         return redirect('login')
-    notes = Note.objects.all().order_by('-created_at')
+    notes = Note.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'index.html',{'notes':notes})
-
-# def index(request):
-#     from django.http import HttpResponse
-#     return HttpResponse("Hello from NoteMate!")
-
 
 @login_required
 def create_note(request):
@@ -27,7 +22,11 @@ def create_note(request):
         desc = request.POST.get('content')
     
         if name!="" and desc!="":
-            note = Note(title=name, content=desc, user=request.user)  
+            note = Note(
+                user=request.user, 
+                title=name,
+                content=desc
+            )
             note.save()
             messages.success(request, "Note created successfully!")
             return redirect('index')
@@ -36,7 +35,7 @@ def create_note(request):
 
 @login_required
 def edit_note(request, note_id):
-    note = get_object_or_404(Note, id=note_id)
+    note = get_object_or_404(Note, id=note_id, user=request.user)
 
     if request.method == "POST":
         note.title = request.POST.get('title')
@@ -51,17 +50,9 @@ def edit_note(request, note_id):
 @login_required
 def delete_note(request, note_id):
     if request.method == "POST":
-        note = get_object_or_404(Note, id=note_id)
+        note = note = get_object_or_404(Note, id=note_id, user=request.user)
         note.delete()
     return redirect('index')
-
-def save_note(request):
-    
-        # form = NoteForm(request.POST)
-        # if form.is_valid():
-        #     form.save()
-        #     return redirect('index')
-    return render(request, 'create_note.html')
 
 
 def register(request):
@@ -70,7 +61,6 @@ def register(request):
         password = request.POST.get('password')
         password2 = request.POST.get('password2')
 
-        # Basic validation
         if not email or not password or not password2:
             messages.error(request, "All fields are required!")
             return redirect('register')
@@ -87,8 +77,7 @@ def register(request):
             messages.error(request, "Email is already registered!")
             return redirect('register')
 
-        # Create user
-        username = email.split('@')[0]  # simple username from email
+        username = email.split('@')[0] 
         user = User.objects.create_user(username=username, email=email, password=password)
         user.save()
 
@@ -98,27 +87,23 @@ def register(request):
     return render(request, 'register.html')
 
 
-# ----------------- LOGIN -----------------
 def login_user(request):
-    if request.user.is_authenticated:  # prevent logged-in users from seeing login page
+    if request.user.is_authenticated:  
         return redirect('index')
     if request.method == "POST":
         email = request.POST.get('email').strip()
         password = request.POST.get('password')
 
-        # Basic validation
         if not email or not password:
             messages.error(request, "All fields are required!")
             return redirect('login')
 
-        # Try to get the user by email
         try:
             user_obj = User.objects.get(email=email)
         except User.DoesNotExist:
             messages.error(request, "Invalid email or password")
             return redirect('login')
 
-        # Use the actual username stored in DB
         user = authenticate(request, username=user_obj.username, password=password)
 
         if user is not None:
@@ -131,8 +116,6 @@ def login_user(request):
 
     return render(request, 'login.html')
 
-
-# ----------------- LOGOUT -----------------
 def logout_user(request):
     logout(request)
     messages.success(request, "Logged out successfully")
