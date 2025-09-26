@@ -46,39 +46,39 @@ python manage.py migrate
 python manage.py runserver
 
 
+```
 
 
 ## 📂 Inputs & Outputs
-Inputs
+**Inputs**
 
-User-provided credentials (username, email, password).
+- User-provided credentials (username, email, password).
 
-Note content (title, text).
+- Note content (title, text).
 
-Outputs
+**Outputs**
 
-Dynamic note dashboard with CRUD functionality.
+- Dynamic note dashboard with CRUD functionality.
 
-Secure storage of user-specific notes.
+- Secure storage of user-specific notes.
 
-Auth-based access (only logged-in users can manage notes).
+- Auth-based access (only logged-in users can manage notes).
 
+---
 
+## 🔬 Workflow Explained
 
+**Authentication** → Django’s built-in system for signup, login, logout.
 
-##🔬 Workflow Explained
+**Database Setup** → Notes and users stored securely in PostgreSQL (or SQLite for local dev).
 
-Authentication → Django’s built-in system for signup, login, logout.
+**Note Operations** → Create, read, update, delete notes seamlessly.
 
-Database Setup → Notes and users stored securely in PostgreSQL (or SQLite for local dev).
+**Frontend** → Clean UI with Bootstrap for responsiveness.
 
-Note Operations → Create, read, update, delete notes seamlessly.
+**Routing** → Django views handle navigation (login → dashboard → note editor).
 
-Frontend → Clean UI with Bootstrap for responsiveness.
-
-Routing → Django views handle navigation (login → dashboard → note editor).
-
-
+---
 
 ## 📊 Example Screens
 
@@ -88,20 +88,19 @@ Routing → Django views handle navigation (login → dashboard → note editor)
 ### Note Editor
 ![Note Editor Screenshot](images/save.png)
 
-### Login
+### Login Page
 ![Login Screenshot](images/login.png)
 
-### View
+### View Note
 ![Note Viewer Screenshot](images/view.png)
 
+---
 
-
-
-👨‍💻 Author
+## 👨‍💻 Author
 
 Shashwat Singh
 📧 Email: shashwat.singh2027@gmail.com
 
-💼 LinkedIn: Your LinkedIn
+💼 LinkedIn: (https://www.linkedin.com/in/singhshashwat26/)
 
-🐙 GitHub: Your GitHub
+🐙 GitHub: https://github.com/shashwat2645
