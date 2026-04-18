@@ -24,6 +24,11 @@ DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'notemate-uyhf.onrender.com', 'www.notemate-uyhf.onrender.com']
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://notemate-uyhf.onrender.com',
+    'https://notemate-uyhf.onrender.com',
+]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
