@@ -22,7 +22,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dev-key')
 
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') + ['.render.com']
 
 
 INSTALLED_APPS = [
@@ -72,6 +72,12 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# For PostgreSQL on Render, uncomment below and remove sqlite above:
+# import dj_database_url
+# DATABASES = {
+#     'default': dj_database_url.config()
+# }
 
 
 AUTH_PASSWORD_VALIDATORS = [
