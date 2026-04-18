@@ -1,45 +1,33 @@
-from django.shortcuts import render, redirect, get_object_or_404
+import json
+from django.http import JsonResponse
+from django.views import View
+from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from .models import Note
 
 
-@login_required
-def note_list(request):
-    notes = Note.objects.filter(user=request.user).order_by('-updated_at')
-    return render(request, 'notes/note_list.html', {'notes': notes})
+@method_decorator(login_required, name='dispatch')
+class ExportNotes(View):
+    def get(self, request):
+        from notes.models import Note
+        notes = Note.objects.filter(user=request.user)
+        data = [{'title': n.title, 'content': n.content, 'created_at': n.created_at.isoformat(), 'updated_at': n.updated_at.isoformat()} for n in notes]
+        return JsonResponse({'notes': data})
 
 
-@login_required
-def note_create(request):
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        content = request.POST.get('content')
-        Note.objects.create(user=request.user, title=title, content=content)
-        return redirect('note_list')
-    return render(request, 'notes/note_form.html')
-
-
-@login_required
-def note_detail(request, note_id):
-    note = get_object_or_404(Note, id=note_id, user=request.user)
-    return render(request, 'notes/note_detail.html', {'note': note})
-
-
-@login_required
-def note_update(request, note_id):
-    note = get_object_or_404(Note, id=note_id, user=request.user)
-    if request.method == 'POST':
-        note.title = request.POST.get('title')
-        note.content = request.POST.get('content')
-        note.save()
-        return redirect('note_detail', note_id=note.id)
-    return render(request, 'notes/note_form.html', {'note': note})
-
-
-@login_required
-def note_delete(request, note_id):
-    note = get_object_or_404(Note, id=note_id, user=request.user)
-    if request.method == 'POST':
-        note.delete()
-        return redirect('note_list')
-    return render(request, 'notes/note_confirm_delete.html', {'note': note})
+@method_decorator(login_required, name='dispatch')
+class ImportNotes(View):
+    def post(self, request):
+        from notes.models import Note
+        try:
+            data = json.loads(request.body)
+            imported = 0
+            for note_data in data.get('notes', []):
+                Note.objects.create(
+                    user=request.user,
+                    title=note_data.get('title', 'Untitled'),
+                    content=note_data.get('content', '')
+                )
+                imported += 1
+            return JsonResponse({'imported': imported})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)

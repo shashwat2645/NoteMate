@@ -69,15 +69,48 @@
         
         <main class="flex-1 overflow-auto pt-16 lg:pt-0">
             <div class="p-4 lg:p-8">
-                <div class="flex items-center justify-between mb-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                     <div>
                         <h1 class="text-xl lg:text-2xl font-bold text-gray-900">All Notes</h1>
                         <p class="text-gray-500 mt-1">Manage your notes</p>
                     </div>
-                    <a href="{% url 'note_create' %}" class="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-xl hover:shadow-lg transition">
-                        + New Note
-                    </a>
+                    <div class="flex gap-2">
+                        <button onclick="exportNotes()" class="px-4 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition text-sm">
+                            Export
+                        </button>
+                        <label class="px-4 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition cursor-pointer text-sm">
+                            Import
+                            <input type="file" onchange="importNotes(this)" class="hidden" accept=".json">
+                        </label>
+                        <a href="{% url 'note_create' %}" class="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-xl hover:shadow-lg transition">
+                            + New
+                        </a>
+                    </div>
                 </div>
+
+                <script>
+                    async function exportNotes() {
+                        const res = await fetch('{% url "export_notes" %}');
+                        const data = await res.json();
+                        const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'notes.json';
+                        a.click();
+                    }
+                    async function importNotes(input) {
+                        const file = input.files[0];
+                        if (!file) return;
+                        const text = await file.text();
+                        const res = await fetch('{% url "import_notes" %}', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+                            body: text
+                        });
+                        if (res.ok) location.reload();
+                    }
+                </script>
                 
                 {% if notes %}
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
