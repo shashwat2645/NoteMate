@@ -12,8 +12,27 @@
 </head>
 <body class="bg-gray-50">
     <div class="flex h-screen">
+        <!-- Mobile Header -->
+        <header class="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button id="menuBtn" class="p-2 -ml-2 rounded-lg hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">N</div>
+                    <span class="font-bold text-gray-900">NoteMate</span>
+                </div>
+            </div>
+            <a href="{% url 'logout' %}" class="p-2 rounded-lg hover:bg-gray-100">
+                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            </a>
+        </header>
+
+        <!-- Sidebar Overlay -->
+        <div id="sidebarOverlay" class="lg:hidden fixed inset-0 bg-black/50 z-40 hidden" onclick="toggleSidebar()"></div>
+
         <!-- Sidebar -->
-        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
+        <aside id="sidebar" class="w-64 bg-white border-r border-gray-200 flex flex-col fixed lg:static inset-y-0 left-0 z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
             <div class="p-6 border-b border-gray-100">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">N</div>
@@ -49,11 +68,11 @@
         </aside>
         
         <!-- Main Content -->
-        <main class="flex-1 overflow-auto">
-            <div class="p-8">
+        <main class="flex-1 overflow-auto pt-16 lg:pt-0">
+            <div class="p-4 lg:p-8">
                 <div class="flex items-center justify-between mb-8">
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900">Recent Notes</h1>
+                        <h1 class="text-xl lg:text-2xl font-bold text-gray-900">Recent Notes</h1>
                         <p class="text-gray-500 mt-1">Welcome back, {{ user.username }}</p>
                     </div>
                     <a href="{% url 'note_create' %}" class="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-xl hover:shadow-lg transition">
@@ -62,9 +81,9 @@
                 </div>
                 
                 {% if notes %}
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                     {% for note in notes %}
-                    <a href="{% url 'note_detail' note_id=note.id %}" class="block p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <a href="{% url 'note_detail' note_id=note.id %}" class="block p-4 lg:p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                         <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ note.title }}</h3>
                         <p class="text-gray-500 text-sm line-clamp-3 mb-4">{{ note.content }}</p>
                         <p class="text-gray-400 text-xs">Updated {{ note.updated_at|timesince }} ago</p>
@@ -86,5 +105,16 @@
             </div>
         </main>
     </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        document.getElementById('menuBtn').addEventListener('click', toggleSidebar);
+    </script>
 </body>
 </html>
