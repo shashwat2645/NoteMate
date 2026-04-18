@@ -18,7 +18,6 @@ A modern, secure note-taking web application built with Django. NoteMate allows 
 - **Database**: SQLite
 - **Frontend**: HTML, Tailwind CSS
 - **Email**: SMTP support for notifications
-- **Deployment**: Gunicorn + WhiteNoise for static files
 
 ## Installation
 
