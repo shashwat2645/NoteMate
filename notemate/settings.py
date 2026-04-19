@@ -75,7 +75,7 @@ import dj_database_url
 
 if os.getenv('DATABASE_URL'):
     DATABASES = {
-        'default': dj_database_url.config()
+        'default': dj_database_url.config(conn_max_age=600)
     }
 else:
     DATABASES = {
