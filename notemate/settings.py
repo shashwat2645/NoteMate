@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
@@ -70,8 +71,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'notemate.wsgi.application'
-
-import dj_database_url
 
 if os.getenv('DATABASE_URL'):
     DATABASES = {
