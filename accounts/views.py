@@ -27,6 +27,15 @@ def register(request):
     
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
+        
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        
+        if User.objects.filter(username=username).exists():
+            form.add_error('username', 'Username already exists.')
+        if User.objects.filter(email=email).exists():
+            form.add_error('email', 'Email already registered.')
+        
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
@@ -35,9 +44,8 @@ def register(request):
             profile = Profile.objects.get(user=user)
             profile.generate_new_otp()
             send_verification_email(user, profile.verification_otp)
-            messages.success(request, 'Registration successful! Check your email for verification OTP.')
             
-            messages.success(request, 'Registration successful! Please check your email to verify your account.')
+            messages.success(request, 'Registration successful! Check your email for verification OTP.')
             return redirect(f'{reverse("verify_email")}?email={user.email}')
     else:
         form = RegistrationForm()
