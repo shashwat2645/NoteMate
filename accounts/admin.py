@@ -15,17 +15,25 @@ class ProfileInline(admin.StackedInline):
 class CustomUserAdmin(BaseUserAdmin):
     inlines = (ProfileInline,)
     list_display = ('username', 'email', 'date_joined', 'is_verified', 'note_count')
-    list_filter = ('is_staff', 'is_superuser', 'date_joined', 'profile__email_verified')
+    list_filter = ('is_staff', 'is_superuser', 'date_joined')
     readonly_fields = ('date_joined', 'last_login')
+    list_select_related = ('profile',)
 
     def is_verified(self, obj):
-        return obj.profile.email_verified if hasattr(obj, 'profile') else False
+        try:
+            return obj.profile.email_verified
+        except Profile.DoesNotExist:
+            return False
     is_verified.short_description = 'Verified'
     is_verified.boolean = True
 
     def note_count(self, obj):
         return obj.notes.count()
     note_count.short_description = 'Notes'
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.select_related('profile')
 
 
 admin.site.unregister(User)
