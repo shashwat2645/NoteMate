@@ -70,6 +70,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'notemate.wsgi.application'
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 # Try to use PostgreSQL from Render env vars
 if os.getenv('PGHOST') and os.getenv('PGDATABASE'):
