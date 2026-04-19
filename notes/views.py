@@ -66,6 +66,7 @@ def note_delete(request, note_id):
 
 @method_decorator(login_required, name='dispatch')
 class ExportNotes(View):
+    """Export notes as JSON"""
     def get(self, request):
         notes = Note.objects.filter(user=request.user)
         data = [{'title': n.title, 'content': n.content, 'created_at': n.created_at.isoformat(), 'updated_at': n.updated_at.isoformat()} for n in notes]
