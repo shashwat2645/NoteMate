@@ -28,25 +28,30 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         
+        if not form.is_valid():
+            return render(request, 'accounts/register.html', {'form': form})
+        
         username = request.POST.get('username')
         email = request.POST.get('email')
         
         if User.objects.filter(username=username).exists():
             form.add_error('username', 'Username already exists.')
+            return render(request, 'accounts/register.html', {'form': form})
+        
         if User.objects.filter(email=email).exists():
             form.add_error('email', 'Email already registered.')
+            return render(request, 'accounts/register.html', {'form': form})
         
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
-            
-            profile = Profile.objects.get(user=user)
-            profile.generate_new_otp()
-            send_verification_email(user, profile.verification_otp)
-            
-            messages.success(request, 'Registration successful! Check your email for verification OTP.')
-            return redirect(f'{reverse("verify_email")}?email={user.email}')
+        user = form.save(commit=False)
+        user.is_active = False
+        user.save()
+        
+        profile = Profile.objects.get(user=user)
+        profile.generate_new_otp()
+        send_verification_email(user, profile.verification_otp)
+        
+        messages.success(request, 'Registration successful! Check your email for verification OTP.')
+        return redirect(f'{reverse("verify_email")}?email={user.email}')
     else:
         form = RegistrationForm()
     return render(request, 'accounts/register.html', {'form': form})
