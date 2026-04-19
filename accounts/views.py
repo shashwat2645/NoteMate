@@ -29,14 +29,13 @@ def register(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_active = True
+            user.is_active = False
             user.save()
             
             profile = Profile.objects.get(user=user)
-            profile.email_verified = True
-            profile.save()
-            
-            send_welcome_email(user)
+            profile.generate_new_otp()
+            send_verification_email(user, profile.verification_otp)
+            messages.success(request, 'Registration successful! Check your email for verification OTP.')
             
             messages.success(request, 'Registration successful! Please check your email to verify your account.')
             return redirect(f'{reverse("verify_email")}?email={user.email}')
