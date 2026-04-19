@@ -17,3 +17,4 @@ class NoteForm(forms.ModelForm):
                 'rows': 10
             }),
         }
+        }
