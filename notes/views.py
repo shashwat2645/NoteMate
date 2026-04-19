@@ -14,6 +14,7 @@ from .forms import NoteForm
 
 @login_required
 def note_list(request):
+    """List all notes for the current user"""
     notes = Note.objects.filter(user=request.user).order_by('-updated_at')
     return render(request, 'notes/note_list.html', {'notes': notes})
 
