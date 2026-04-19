@@ -54,9 +54,12 @@ def verify_email(request):
             return render(request, 'accounts/verify_email.html', {'email': email})
         
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.filter(email=email).first()
+            if not user:
+                messages.error(request, 'Invalid email or OTP.')
+                return render(request, 'accounts/verify_email.html', {'email': email})
             profile = Profile.objects.get(user=user)
-        except (User.DoesNotExist, Profile.DoesNotExist):
+        except Profile.DoesNotExist:
             messages.error(request, 'Invalid email or OTP.')
             return render(request, 'accounts/verify_email.html', {'email': email})
         
