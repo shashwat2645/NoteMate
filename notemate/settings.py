@@ -71,28 +71,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'notemate.wsgi.application'
 
-# Try to use PostgreSQL from Render env vars
-if os.getenv('PGHOST') and os.getenv('PGDATABASE'):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('PGDATABASE'),
-            'USER': os.getenv('PGUSER'),
-            'PASSWORD': os.getenv('PGPASSWORD'),
-            'HOST': os.getenv('PGHOST'),
-            'PORT': 5432,
-        }
+# Database configuration
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-elif os.getenv('DATABASE_URL'):
-    import dj_database_url
-    DATABASES = dj_database_url.config()
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
 
 
 AUTH_PASSWORD_VALIDATORS = [
