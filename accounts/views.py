@@ -142,3 +142,8 @@ def dashboard(request):
     from notes.models import Note
     notes = Note.objects.filter(user=request.user).order_by('-updated_at')[:5]
     return render(request, 'accounts/dashboard.html', {'notes': notes})
+
+
+@login_required
+def profile(request):
+    return render(request, 'accounts/profile.html')
