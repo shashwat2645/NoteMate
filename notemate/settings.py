@@ -71,8 +71,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'notemate.wsgi.application'
 
-if os.getenv('DATABASE_URL'):
-import dj_database_url
 import urllib.parse
 
 db_url = os.getenv('DATABASE_URL', '')
@@ -92,6 +90,7 @@ if db_url and 'postgres' in db_url:
     except Exception:
         DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
 else:
+    DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
     DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
 else:
     DATABASES = {
