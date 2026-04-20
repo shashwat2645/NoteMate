@@ -118,7 +118,7 @@ def user_login(request):
         if user is not None:
             try:
                 profile = user.profile
-                if not profile.email_verified:
+                if not profile.email_verified and not user.is_staff:
                     messages.error(request, 'Please verify your email first.')
                     return render(request, 'accounts/login.html', {'form': form})
             except Profile.DoesNotExist:
