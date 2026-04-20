@@ -111,21 +111,27 @@ def user_login(request):
         return redirect('dashboard')
     
     if request.method == 'POST':
-        form = LoginForm(request.POST)
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            try:
-                profile = user.profile
-                if not profile.email_verified and not user.is_staff:
-                    messages.error(request, 'Please verify your email first.')
-                    return render(request, 'accounts/login.html', {'form': form})
-            except Profile.DoesNotExist:
-                pass
-            login(request, user)
-            return redirect('dashboard')
-        else:
+        
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        try:
+            user = User.objects.get(username=username)
+            if user.check_password(password) and user.is_active:
+                try:
+                    profile = user.profile
+                    if not profile.email_verified and not user.is_staff:
+                        messages.error(request, 'Please verify your email first.')
+                        form = LoginForm()
+                        return render(request, 'accounts/login.html', {'form': form})
+                except Profile.DoesNotExist:
+                    pass
+                login(request, user)
+                return redirect('dashboard')
+            else:
+                messages.error(request, 'Invalid username or password.')
+        except User.DoesNotExist:
             messages.error(request, 'Invalid username or password.')
     else:
         form = LoginForm()
