@@ -110,6 +110,8 @@ def user_login(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
     
+    form = LoginForm()
+    
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -123,7 +125,6 @@ def user_login(request):
                     profile = user.profile
                     if not profile.email_verified and not user.is_staff:
                         messages.error(request, 'Please verify your email first.')
-                        form = LoginForm()
                         return render(request, 'accounts/login.html', {'form': form})
                 except Profile.DoesNotExist:
                     pass
@@ -133,8 +134,6 @@ def user_login(request):
                 messages.error(request, 'Invalid username or password.')
         except User.DoesNotExist:
             messages.error(request, 'Invalid username or password.')
-    else:
-        form = LoginForm()
     return render(request, 'accounts/login.html', {'form': form})
 
 

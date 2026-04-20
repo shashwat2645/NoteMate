@@ -16,11 +16,17 @@ class ProfileInline(admin.StackedInline):
 
 class CustomUserAdmin(BaseUserAdmin):
     inlines = (ProfileInline,)
-    list_display = ('username', 'email', 'date_joined', 'is_verified', 'note_count', 'is_staff', 'is_superuser')
-    list_filter = ('is_staff', 'is_superuser', 'date_joined')
+    list_display = ('username', 'email', 'date_joined', 'is_verified', 'note_count', 'is_admin')
+    list_filter = ('is_staff', 'date_joined')
     readonly_fields = ('date_joined', 'last_login')
     list_select_related = ('profile',)
     actions = ['verify_users', 'unverify_users', 'make_admin', 'remove_admin']
+    list_per_page = 50
+
+    def is_admin(self, obj):
+        return obj.is_staff
+    is_admin.short_description = 'Admin'
+    is_admin.boolean = True
 
     def is_verified(self, obj):
         try:
@@ -59,24 +65,27 @@ class CustomUserAdmin(BaseUserAdmin):
     unverify_users.short_description = 'Mark selected users as unverified'
 
     def make_admin(self, request, queryset):
-        for user in queryset:
-            user.is_staff = True
-            user.is_superuser = True
-            user.save()
+        queryset.update(is_staff=True, is_superuser=True)
         self.message_user(request, f'{queryset.count()} users made admin.')
     make_admin.short_description = 'Make selected users admin'
 
     def remove_admin(self, request, queryset):
-        for user in queryset:
-            user.is_staff = False
-            user.is_superuser = False
-            user.save()
+        queryset.update(is_staff=False, is_superuser=False)
         self.message_user(request, f'{queryset.count()} users removed from admin.')
     remove_admin.short_description = 'Remove admin from selected users'
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         return qs.select_related('profile')
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        user = self.get_object(request, object_id)
+        extra_context = extra_context or {}
+        extra_context['show_make_admin'] = user and not user.is_staff
+        return super().change_view(request, object_id, form_url, extra_context)
+
+    def add_view(self, request, form_url='', extra_context=None):
+        return super().add_view(request, form_url)
 
 
 admin.site.unregister(User)
