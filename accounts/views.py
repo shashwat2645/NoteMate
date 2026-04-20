@@ -111,29 +111,35 @@ def user_login(request):
         return redirect('dashboard')
     
     form = LoginForm()
+    error = None
     
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
         
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
-        try:
-            user = User.objects.get(username=username)
-            if user.check_password(password) and user.is_active:
+        if not username or not password:
+            error = 'Please enter username and password.'
+        else:
+            from django.contrib.auth import authenticate
+            user = authenticate(request, username=username, password=password)
+            
+            if user is not None:
                 try:
                     profile = user.profile
                     if not profile.email_verified and not user.is_staff:
-                        messages.error(request, 'Please verify your email first.')
-                        return render(request, 'accounts/login.html', {'form': form})
+                        error = 'Please verify your email first.'
+                    else:
+                        login(request, user)
+                        return redirect('dashboard')
                 except Profile.DoesNotExist:
-                    pass
-                login(request, user)
-                return redirect('dashboard')
+                    login(request, user)
+                    return redirect('dashboard')
             else:
-                messages.error(request, 'Invalid username or password.')
-        except User.DoesNotExist:
-            messages.error(request, 'Invalid username or password.')
+                error = 'Invalid username or password.'
+    
+    if error:
+        messages.error(request, error)
+    
     return render(request, 'accounts/login.html', {'form': form})
 
 
