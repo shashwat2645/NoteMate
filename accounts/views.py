@@ -106,7 +106,12 @@ def verify_email(request):
     return render(request, 'accounts/verify_email.html', {'email': email})
 
 
+import logging
+logger = logging.getLogger(__name__)
+
 def user_login(request):
+    logger.info(f"Login attempt via {request.method}")
+    
     if request.user.is_authenticated:
         return redirect('dashboard')
     
@@ -117,27 +122,34 @@ def user_login(request):
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '')
         
+        logger.info(f"Login attempt for user: '{username}'")
+        
         if not username or not password:
             error = 'Please enter username and password.'
         else:
             from django.contrib.auth import authenticate
             user = authenticate(request, username=username, password=password)
+            logger.info(f"Authenticate result: {user}")
             
             if user is not None:
                 try:
                     profile = user.profile
+                    logger.info(f"Profile email_verified: {profile.email_verified}, is_staff: {user.is_staff}")
                     if not profile.email_verified and not user.is_staff:
                         error = 'Please verify your email first.'
                     else:
                         login(request, user)
+                        logger.info(f"Login successful, redirecting to dashboard")
                         return redirect('dashboard')
                 except Profile.DoesNotExist:
                     login(request, user)
+                    logger.info(f"No profile, login successful")
                     return redirect('dashboard')
             else:
                 error = 'Invalid username or password.'
     
     if error:
+        logger.error(f"Login failed: {error}")
         messages.error(request, error)
     
     return render(request, 'accounts/login.html', {'form': form})
