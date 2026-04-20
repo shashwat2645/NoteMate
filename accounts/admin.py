@@ -16,11 +16,11 @@ class ProfileInline(admin.StackedInline):
 
 class CustomUserAdmin(BaseUserAdmin):
     inlines = (ProfileInline,)
-    list_display = ('username', 'email', 'date_joined', 'is_verified', 'note_count')
+    list_display = ('username', 'email', 'date_joined', 'is_verified', 'note_count', 'is_staff', 'is_superuser')
     list_filter = ('is_staff', 'is_superuser', 'date_joined')
     readonly_fields = ('date_joined', 'last_login')
     list_select_related = ('profile',)
-    actions = ['verify_users', 'unverify_users']
+    actions = ['verify_users', 'unverify_users', 'make_admin', 'remove_admin']
 
     def is_verified(self, obj):
         try:
@@ -57,6 +57,22 @@ class CustomUserAdmin(BaseUserAdmin):
                 pass
         self.message_user(request, f'{queryset.count()} users unverified.')
     unverify_users.short_description = 'Mark selected users as unverified'
+
+    def make_admin(self, request, queryset):
+        for user in queryset:
+            user.is_staff = True
+            user.is_superuser = True
+            user.save()
+        self.message_user(request, f'{queryset.count()} users made admin.')
+    make_admin.short_description = 'Make selected users admin'
+
+    def remove_admin(self, request, queryset):
+        for user in queryset:
+            user.is_staff = False
+            user.is_superuser = False
+            user.save()
+        self.message_user(request, f'{queryset.count()} users removed from admin.')
+    remove_admin.short_description = 'Remove admin from selected users'
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

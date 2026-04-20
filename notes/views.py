@@ -1,7 +1,6 @@
 import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.http import JsonResponse
 from django.views import View
 from django.utils.decorators import method_decorator
@@ -24,7 +23,6 @@ def note_create(request):
             note = form.save(commit=False)
             note.user = request.user
             note.save()
-            messages.success(request, 'Note created!')
             return redirect('note_list')
     else:
         form = NoteForm()
@@ -44,7 +42,6 @@ def note_update(request, note_id):
         form = NoteForm(request.POST, instance=note)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Note updated!')
             return redirect('note_detail', note_id=note.id)
     else:
         form = NoteForm(instance=note)
@@ -56,7 +53,6 @@ def note_delete(request, note_id):
     note = get_object_or_404(Note, id=note_id, user=request.user)
     if request.method == 'POST':
         note.delete()
-        messages.success(request, 'Note deleted!')
         return redirect('note_list')
     return render(request, 'notes/note_confirm_delete.html', {'note': note})
 
