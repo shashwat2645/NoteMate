@@ -134,6 +134,7 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
+    messages.success(request, 'Logged out successfully!')
     return redirect('login')
 
 
