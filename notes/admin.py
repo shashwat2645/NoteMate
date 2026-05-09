@@ -5,11 +5,12 @@ from .models import Note
 
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
-    list_display = ('title', 'user', 'created_at')
+    list_display = ('title', 'user', 'created_at', 'is_admin')
     list_filter = ('created_at',)
     search_fields = ('title', 'content', 'user__username')
     readonly_fields = ('created_at', 'updated_at')
     ordering = ('-created_at',)
+    list_editable = ('is_admin',)
 
     fieldsets = (
         ('Note Details', {
